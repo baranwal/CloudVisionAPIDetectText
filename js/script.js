@@ -76,7 +76,7 @@ $(document).ready(function() {
     // add a new image card when upload a image for handwritten text detection
     function addImageCard(src, textElem) {
 
-        var $cardElement = $('<div class="col s4 card small">' +
+        var $cardElement = $('<div class="col s6 m4 card small">' +
             '                    <div class="card-image  waves-effect waves-block waves-light">' +
             '                        <img class="activator" src="' + src + '">' +
             '                    </div>' +
