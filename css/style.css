@@ -1,0 +1,48 @@
+:root {
+    --black-background-color: #404040;
+    --black-color: #404040;
+}
+
+body {
+    color: var(--black-color);
+}
+
+nav,
+a.btn {
+    background-color: var(--black-background-color);
+}
+
+span.navbar-title{
+    font-size: 32px;
+}
+
+.title {
+    margin: 20px 0px;
+}
+
+.image-upload-block {
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    border: 2px dashed #ccc;
+    padding-top: 8em;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.image-upload-overlay-div {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(212, 236, 177, 0.46);
+    padding-top: 6em;
+    display: none;
+}
+
+.second-half {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
