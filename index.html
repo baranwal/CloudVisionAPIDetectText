@@ -6,7 +6,7 @@
     <meta content="utf-8" http-equiv="encoding">
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Extract Handwritten Text From Image | Ymirlabs Task</title>
+    <title>Extract Handwritten Text From Image</title>
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
@@ -26,12 +26,16 @@
         </div>
     </nav>
     <div class="row main-div">
-        <div class="col m8 s12 center first-half">
-            <h5 class="title">Here goes lists of uploaded image</h5>
+        <div class="col s12 center">
+            <a class="waves-effect waves-orange btn-large red view-all-btn">View Previous Store Images</a>
+        </div>
+        <div class="col m8 s12 center first-half half-div">
+            <h5 class="title">Uploaded image list</h5>
             <div class="row uploaded-image-list">
+
             </div>
         </div>
-        <div class="col s12 m4 center second-half">
+        <div class="col s12 m4 center second-half half-div">
             <h5 class="title">Image upload</h5>
             <div class="row">
                 <div class="col s12 center">
@@ -91,7 +95,7 @@
                         <div class="file-field input-field">
                             <div class="btn">
                                 <span>File</span>
-                                <input class="image-upload" type="file">
+                                <input class="image-upload" name="image-upload" type="file">
                             </div>
                             <div class="file-path-wrapper">
                                 <input class="file-path validate" type="text">

@@ -7,6 +7,10 @@ body {
     color: var(--black-color);
 }
 
+nav{
+    margin-bottom: 20px;
+}
+
 nav,
 a.btn {
     background-color: var(--black-background-color);
@@ -45,4 +49,9 @@ span.navbar-title{
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+}
+
+.card-image img{
+    height: 180px;
+    object-fit: cover;
 }
