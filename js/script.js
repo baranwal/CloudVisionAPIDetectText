@@ -51,6 +51,7 @@ $(document).ready(function() {
         // Strip out the file prefix when you convert to json.
         $('.image-upload-block').removeClass('image-upload-div');
         $('.image-upload-overlay-div').show();
+        $('.uploaded-image-list').find('.not-found-div').remove();
 
         var request = {
             "requests": [{
@@ -140,9 +141,14 @@ $(document).ready(function() {
                 if (data.hasOwnProperty('error')) {
                     Materialize.toast(data['error'], 2500);
                 } else if (data.hasOwnProperty('objects')) {
-                    data['objects'].forEach(function(item, index) {
-                        addImageCard(item, "");
-                    });
+                    if(!data['objects'].length){
+                        $('.uploaded-image-list').append('<div class="not-found-div">No Previous Images/Images Found!</div>');
+                    }
+                    else{
+                        data['objects'].forEach(function(item, index) {
+                            addImageCard(item, "");
+                        });
+                    }
                 }
                 $('.uploaded-image-list').find('.preloader-wrapper').remove();
             },
@@ -156,56 +162,59 @@ $(document).ready(function() {
     // fetch text for previous stored image/s
     $('.main-div').on('click', '.card-image, .card-content', function() {
         var this1 = $(this);
-        var src = this1.closest('.card').find('img.activator').attr('src');
-        this1.closest('.card').find('.card-reveal').append($('.preloader-wrapper:eq(0)').clone());
+        if(!this1.closest('.card').find('.card-reveal').find('ul.image-text-list').length){
+            var src = this1.closest('.card').find('img.activator').attr('src');
+            this1.closest('.card').find('.card-reveal').append($('.preloader-wrapper:eq(0)').clone());
 
-        var request = {
-            "requests": [{
-                "image": {
-                    "source": {
-                        "imageUri": src
-                    }
-                },
-                "features": [{
-                    "type": "DOCUMENT_TEXT_DETECTION",
-                    "maxResults": 200
+            var request = {
+                "requests": [{
+                    "image": {
+                        "source": {
+                            "imageUri": src
+                        }
+                    },
+                    "features": [{
+                        "type": "DOCUMENT_TEXT_DETECTION",
+                        "maxResults": 200
+                    }]
                 }]
-            }]
-        };
+            };
 
-        $.ajax({
-            url: Vision_Url,
-            type: "POST",
-            data: JSON.stringify(request),
-            contentType: "application/json",
-            success: function(data) {
-                if (data.hasOwnProperty('responses')) {
-                    var responses = data['responses'][0];
-                    if (responses.hasOwnProperty('error')) {
-                        Materialize.toast(responses['error']['message'], 2500);
-                    } else if (responses.hasOwnProperty('textAnnotations')) {
-                        var ulElem = '<ul class="image-text-list">'
-                        $.each(responses['textAnnotations'], function(key, val) {
-                            var liElem = "<li><strong>" + (key + 1) + ". </strong>" + val['description'] + "</li>";
-                            ulElem += liElem;
-                        });
-                        ulElem += '</ul>';
-                        this1.closest('.card').find('.card-reveal').append(ulElem);
-                    } else {
-                        Materialize.toast('No results found', 2500);
+            $.ajax({
+                url: Vision_Url,
+                type: "POST",
+                data: JSON.stringify(request),
+                contentType: "application/json",
+                success: function(data) {
+                    if (data.hasOwnProperty('responses')) {
+                        var responses = data['responses'][0];
+                        if (responses.hasOwnProperty('error')) {
+                            Materialize.toast(responses['error']['message'], 2500);
+                        } else if (responses.hasOwnProperty('textAnnotations')) {
+                            var ulElem = '<ul class="image-text-list">'
+                            $.each(responses['textAnnotations'], function(key, val) {
+                                var liElem = "<li><strong>" + (key + 1) + ". </strong>" + val['description'] + "</li>";
+                                ulElem += liElem;
+                            });
+                            ulElem += '</ul>';
+                            this1.closest('.card').find('.card-reveal').find('ul.image-text-list').remove();
+                            this1.closest('.card').find('.card-reveal').append(ulElem);
+                        } else {
+                            Materialize.toast('No results found', 2500);
+                        }
                     }
+                    this1.closest('.card').find('.card-reveal').find('.preloader-wrapper:eq(0)').remove();
+                },
+                error: function(data) {
+                    if (data.hasOwnProperty('statusText')) {
+                        Materialize.toast(data['statusText'], 2500);
+                    } else {
+                        Materialize.toast('Some Error Occured!', 2500);
+                    }
+                    this1.closest('.card').find('.card-reveal').find('.preloader-wrapper:eq(0)').remove();
                 }
-                this1.closest('.card').find('.card-reveal').find('.preloader-wrapper:eq(0)').remove();
-            },
-            error: function(data) {
-                if (data.hasOwnProperty('statusText')) {
-                    Materialize.toast(data['statusText'], 2500);
-                } else {
-                    Materialize.toast('Some Error Occured!', 2500);
-                }
-                this1.closest('.card').find('.card-reveal').find('.preloader-wrapper:eq(0)').remove();
-            }
-        });
+            });
+        }
     });
 
 });

@@ -5,9 +5,10 @@
 
 body {
     color: var(--black-color);
+    font-family: 'Merriweather', serif;
 }
 
-nav{
+nav {
     margin-bottom: 20px;
 }
 
@@ -16,7 +17,7 @@ a.btn {
     background-color: var(--black-background-color);
 }
 
-span.navbar-title{
+span.navbar-title {
     font-size: 32px;
 }
 
@@ -51,7 +52,14 @@ span.navbar-title{
     top: 0;
 }
 
-.card-image img{
+.card-image img {
     height: 180px;
     object-fit: cover;
+}
+
+.not-found-div {
+    color: #004d40;
+    margin: 40px 0px;
+    font-size: 1.7rem;
+    font-weight: bold;
 }
