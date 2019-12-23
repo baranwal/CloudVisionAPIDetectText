@@ -3,51 +3,35 @@ $(document).ready(function() {
 
     var Vision_Url = 'https://vision.googleapis.com/v1/images:annotate?key=' + Vision_API_Key;
 
-    // function use to read image
-    function readImage(input) {
+    function storeFileToCloudStorage(input) {
         if (input.files && input.files[0]) {
+            var formData = new FormData();
+            formData.append('file', input.files[0]);
 
-            var reader = new FileReader();
-
-            reader.readAsDataURL(input.files[0]);
-
-            var fileType = input.files[0]['type'];
-
-            reader.onload = function(e) {
-                var imgSrc = e.target.result;
-                var imgSrcWithoutBase64String = imgSrc.replace('data:' + fileType + ';base64,', '');
-                storeFileToCloudStorage(input, imgSrcWithoutBase64String);
-            }
+            $.ajax({
+                url: "./uploadObject.php",
+                type: "POST",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.hasOwnProperty('error')) {
+                        Materialize.toast(data['error'], 2500);
+                    } else if (data.hasOwnProperty('imgPath')) {
+                        callVisionApi(data['imgPath']);
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
         }
     }
 
-    function storeFileToCloudStorage(input, imgSrcWithoutBase64String) {
-        var formData = new FormData();
-        formData.append('file', input.files[0]);
-
-        $.ajax({
-            url: "./uploadObject.php",
-            type: "POST",
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType: 'json',
-            success: function(data) {
-                if (data.hasOwnProperty('error')) {
-                    Materialize.toast(data['error'], 2500);
-                } else if (data.hasOwnProperty('imgPath')) {
-                    callVisionApi(data['imgPath'], imgSrcWithoutBase64String);
-                }
-            },
-            error: function(data) {
-                console.log(data);
-            }
-        });
-    }
-
     // used to call cloud vision api
-    function callVisionApi(imgSrc, imgSrcWithoutBase64String) {
+    function callVisionApi(imgSrc) {
         // Strip out the file prefix when you convert to json.
         $('.image-upload-block').removeClass('image-upload-div');
         $('.image-upload-overlay-div').show();
@@ -56,7 +40,9 @@ $(document).ready(function() {
         var request = {
             "requests": [{
                 "image": {
-                    "content": imgSrcWithoutBase64String
+                    "source": {
+                        "imageUri": imgSrc
+                    }
                 },
                 "features": [{
                     "type": "DOCUMENT_TEXT_DETECTION",
@@ -122,7 +108,7 @@ $(document).ready(function() {
 
     // event trigger when upload an image
     $('.image-upload').change(function() {
-        readImage(this);
+        storeFileToCloudStorage(this);
     });
 
     $('.main-div').on('click', '.image-upload-div', function() {
